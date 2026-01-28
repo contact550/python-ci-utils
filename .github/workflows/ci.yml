@@ -1,15 +1,36 @@
-name: CI
-on: [push]
+name: Advanced CI
+
+on: [push, pull_request]
+
 jobs:
-  run-tests:
+  tests:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Set up Python
-        uses: actions/setup-python@v4
+      - uses: actions/setup-python@v4
         with:
           python-version: '3.10'
-      - name: Install pytest
-        run: pip install pytest
-      - name: Run pytest
-        run: pytest
+      - run: pip install -r requirements.txt
+      - run: pytest
+
+  lint:
+    needs: tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v4
+      - run: pip install flake8
+      - run: flake8 src/ tests/ --max-line-length=88
+
+  report:
+    needs: [tests, lint]
+    runs-on: ubuntu-latest
+    steps:
+      - run: |
+          mkdir -p reports
+          echo "Run Date: $(date)" > reports/summary.txt
+          echo "Repo: ${{ github.repository }}" >> reports/summary.txt
+      - uses: actions/upload-artifact@v4
+        with:
+          name: pipeline-report
+          path: reports/
