@@ -14,6 +14,8 @@ def filter_outliers(numbers, min_value, max_value):
 def calculate_statistics(numbers):
     if not numbers:
         raise ValueError("List is empty")
-    stats = {"min": min(numbers), "max": max(numbers), 
-             "average": sum(numbers) / len(numbers)}
-    return stats
+    return {
+        "min": min(numbers),
+        "max": max(numbers),
+        "average": sum(numbers) / len(numbers)
+    }
