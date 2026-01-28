@@ -15,3 +15,4 @@ def test_count_char(string, char, expected):
 def test_is_valid_email(email, expected):
 
     assert is_valid_email(email) == expected
+
